@@ -17,10 +17,10 @@ var upload = multer({ storage: storage }).single("image");
 router.post('/add', upload, async (req, res) => {
     console.log(req.body);
     const user = new User({
-        name: req.body.name,
+        title: req.body.title,
         email: req.body.email,
-        phone: req.body.phone,
-        image: req.file.filename
+        description: req.body.description,
+        status: req.body.status,
     });
     try {
         await user.save();
@@ -70,14 +70,13 @@ router.get('/edit/:id', async (req, res) => {
 
 router.post('/update/:id', upload, async (req, res) => {
     let id = req.params.id;
-    let new_image = '';
 
     try {
         await User.findByIdAndUpdate(id, {
-            name: req.body.name,
+            title: req.body.title,
             email: req.body.email,
-            phone: req.body.phone,
-            image: new_image
+            description: req.body.description,
+            status: req.body.status,
         }).exec();
 
         req.session.message = {
@@ -90,8 +89,11 @@ router.post('/update/:id', upload, async (req, res) => {
     }
 });
 
-router.get('/delete/:id', async (req, res) => {
+router.get('/delete/:id?', async (req, res) => {
     let id = req.params.id;
+    if (!id) {
+        return res.json({ message: "No ID provided", type: "danger" });
+    }
     try {
         await User.findByIdAndDelete(id).exec();
         req.session.message = {
