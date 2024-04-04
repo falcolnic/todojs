@@ -30,6 +30,9 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use(express.static('uploads'));
+
+
 // eng
 app.set('view engine', 'ejs');
 
